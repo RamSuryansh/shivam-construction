@@ -25,7 +25,7 @@
   import constructionSite from './assets/construction-site.png'
   import coreCutting from './assets/core-cutting.png'
   import rebarring from './assets/rebarring.png'
-  import logo from './assets/shivam-logo.png'
+  import logo from './assets/shivam-logo-v2.png'
   import waterproofing from './assets/waterproofing.png'
 
   type Page = 'home' | 'services' | 'about' | 'contact'
@@ -90,6 +90,43 @@
     { id: 'secondary', items: [...services].reverse(), reverse: true },
   ]
 
+  const homeHeroCards = [
+    {
+      title: 'Core cutting',
+      detail: 'Clean RCC openings',
+      image: coreCutting,
+      icon: Drill,
+    },
+    {
+      title: 'Rebarring',
+      detail: 'Chemical anchoring',
+      image: rebarring,
+      icon: SquareStack,
+    },
+    {
+      title: 'Waterproofing',
+      detail: 'Terrace leak control',
+      image: waterproofing,
+      icon: Droplets,
+    },
+    {
+      title: 'Site execution',
+      detail: 'Measured planning',
+      image: constructionSite,
+      icon: Building2,
+    },
+  ] satisfies {
+    title: string
+    detail: string
+    image: string
+    icon: IconComponent
+  }[]
+
+  const homeHeroRows = [
+    { id: 'upper', items: homeHeroCards, reverse: false },
+    { id: 'lower', items: [...homeHeroCards].reverse(), reverse: true },
+  ]
+
   const allServices: { label: string; detail: string; icon: IconComponent }[] = [
     { label: 'Core Cutting', detail: 'Wall, slab and beam openings', icon: Drill },
     { label: 'Rebarring', detail: 'Anchoring and reinforcement', icon: SquareStack },
@@ -128,7 +165,7 @@
         aria-label="Go to home"
         onclick={() => navigate('home')}
       >
-        <img src={logo} alt="Shivam Construction logo" class="h-9 w-9 shrink-0 object-contain" />
+        <img src={logo} alt="Shivam Construction logo" class="h-10 w-10 shrink-0 object-contain" />
         <span class="leading-none">
           <span class="block text-[18px] font-black uppercase text-primary">Shivam</span>
           <span class="block text-[10px] font-semibold uppercase text-secondary">Construction</span>
@@ -148,53 +185,93 @@
 
   <main class="pb-24">
     {#if activePage === 'home'}
-      <section class="relative isolate overflow-hidden bg-inverse-surface text-white">
-        <img
-          src={constructionSite}
-          alt="High-rise construction site with cranes"
-          class="absolute inset-0 -z-20 h-full w-full object-cover"
-        />
-        <div class="absolute inset-0 -z-10 bg-[linear-gradient(to_bottom,rgba(8,15,28,0.54),rgba(8,15,28,0.74)_54%,rgba(8,15,28,0.9))]"></div>
+      <section class="home-hero relative isolate overflow-hidden bg-inverse-surface text-white">
+        <div class="absolute inset-0 -z-20" aria-hidden="true">
+          <img
+            src={constructionSite}
+            alt=""
+            class="home-hero__image h-full w-full object-cover"
+          />
+          <div class="home-hero__blueprint"></div>
+          <div class="home-hero__scan"></div>
 
-        <div class="flex min-h-[610px] flex-col items-center justify-center px-4 py-10 text-center">
-          <div class="mb-4 inline-flex w-fit items-center gap-2 rounded border border-white/35 bg-white/16 px-3 py-2 text-[11px] font-bold uppercase text-white shadow-[0_10px_28px_rgba(0,0,0,0.22)] backdrop-blur">
-            <ShieldCheck size={15} />
-            Structural integrity specialists
+          {#each homeHeroRows as row (row.id)}
+            <div class={['home-hero__column', row.reverse && 'home-hero__column--reverse']}>
+              <div class="home-hero__flow">
+                {#each [0, 1] as loopIndex (loopIndex)}
+                  <div class="home-hero__flow-group">
+                    {#each row.items as item (item.title)}
+                      {@const Icon = item.icon}
+                      <article class="home-hero__work-tile">
+                        <img src={item.image} alt="" class="h-full w-full object-cover" />
+                        <div class="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(0,0,0,0.04),rgba(7,12,22,0.78))]"></div>
+                        <div class="absolute bottom-2 left-2 right-2">
+                          <div class="mb-1 flex h-7 w-7 items-center justify-center rounded bg-primary text-white">
+                            <Icon size={14} strokeWidth={2.5} />
+                          </div>
+                          <h2 class="text-[12px] font-black uppercase leading-tight text-white">
+                            {item.title}
+                          </h2>
+                          <p class="mt-0.5 text-[10px] font-semibold leading-tight text-white/78">
+                            {item.detail}
+                          </p>
+                        </div>
+                      </article>
+                    {/each}
+                  </div>
+                {/each}
+              </div>
+            </div>
+          {/each}
+
+          <div class="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(9,12,20,0.38),rgba(9,12,20,0.5)_34%,rgba(7,10,17,0.9)_72%,rgba(7,10,17,0.98))]"></div>
+          <div class="absolute inset-x-0 bottom-0 h-64 bg-[linear-gradient(to_top,rgba(152,0,27,0.48),transparent)]"></div>
+        </div>
+
+        <div class="home-hero__content relative z-10 flex flex-col justify-between px-4 py-8">
+          <div class="flex items-start justify-between gap-3">
+            <div class="inline-flex w-fit items-center gap-2 rounded border border-white/30 bg-white/14 px-3 py-2 text-[11px] font-bold uppercase text-white shadow-[0_10px_28px_rgba(0,0,0,0.2)] backdrop-blur">
+              <ShieldCheck size={15} />
+              Site-ready team
+            </div>
+
+            <div class="min-w-20 rounded border border-white/24 bg-black/20 px-3 py-2 text-right shadow-[0_10px_24px_rgba(0,0,0,0.22)] backdrop-blur">
+              <p class="text-xl font-black leading-none text-white">500+</p>
+              <p class="mt-1 text-[10px] font-bold uppercase leading-none text-white/74">Projects</p>
+            </div>
           </div>
 
-          <h1 class="mx-auto max-w-[12ch] text-[38px] font-black leading-[1.02] text-white drop-shadow-[0_3px_18px_rgba(0,0,0,0.34)]">
-            Concrete work that holds up.
-          </h1>
-          <p class="mx-auto mt-4 max-w-[30ch] text-base font-medium leading-6 text-white/88 drop-shadow-[0_2px_12px_rgba(0,0,0,0.3)]">
-            Core cutting, rebarring and waterproofing delivered with clean execution across
-            Karnataka.
-          </p>
+          <div class="mx-auto w-full max-w-[398px] pb-2 text-center">
+            <p class="mb-3 text-xs font-bold uppercase tracking-normal text-primary-fixed">
+              Shivam Construction
+            </p>
+            <h1 class="mx-auto max-w-[13ch] text-[39px] font-black leading-[1.02] text-white drop-shadow-[0_3px_18px_rgba(0,0,0,0.34)]">
+              Concrete site work done right.
+            </h1>
+            <p class="mx-auto mt-4 max-w-[31ch] text-base font-medium leading-6 text-white/88 drop-shadow-[0_2px_12px_rgba(0,0,0,0.3)]">
+              Core cutting, rebarring and waterproofing delivered with careful planning across
+              Karnataka.
+            </p>
 
-          <div class="mt-6 grid w-full max-w-[398px] grid-cols-2 gap-3">
-            <button
-              type="button"
-              class="inline-flex h-13 items-center justify-center gap-2 rounded bg-primary px-4 text-sm font-bold uppercase text-white shadow-[0_12px_28px_rgba(0,0,0,0.28)] transition active:scale-[0.98]"
-              onclick={() => navigate('contact')}
-            >
-              Inquire now
-              <ArrowRight size={17} />
-            </button>
-            <a
-              class="inline-flex h-13 items-center justify-center gap-2 rounded border border-white/38 bg-white/14 px-4 text-sm font-bold uppercase text-white shadow-[0_12px_28px_rgba(0,0,0,0.18)] backdrop-blur transition active:scale-[0.98]"
-              href={whatsappHref}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <MessageCircle size={17} />
-              WhatsApp
-            </a>
-          </div>
-
-          <div class="mt-9 flex flex-col items-center gap-2 text-center">
-            <span class="text-sm font-black uppercase leading-tight text-white">Site-ready execution</span>
-            <span class="shrink-0 rounded border border-white/30 bg-white/15 px-2.5 py-1 text-[11px] font-bold uppercase text-white backdrop-blur">
-              Karnataka
-            </span>
+            <div class="mt-6 grid w-full grid-cols-2 gap-3">
+              <button
+                type="button"
+                class="inline-flex h-13 items-center justify-center gap-2 rounded bg-primary px-4 text-sm font-bold uppercase text-white shadow-[0_12px_28px_rgba(0,0,0,0.28)] transition active:scale-[0.98]"
+                onclick={() => navigate('contact')}
+              >
+                Inquire now
+                <ArrowRight size={17} />
+              </button>
+              <a
+                class="inline-flex h-13 items-center justify-center gap-2 rounded border border-white/38 bg-white/14 px-4 text-sm font-bold uppercase text-white shadow-[0_12px_28px_rgba(0,0,0,0.18)] backdrop-blur transition active:scale-[0.98]"
+                href={whatsappHref}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <MessageCircle size={17} />
+                WhatsApp
+              </a>
+            </div>
           </div>
         </div>
       </section>
@@ -294,23 +371,23 @@
           {#each serviceImageRows as row (row.id)}
             <div
               class={[
-                'absolute inset-x-0 -ml-18',
-                row.reverse ? 'bottom-7 rotate-[4deg]' : 'top-6 rotate-[-4deg]',
+                'absolute top-[-8rem] bottom-[-8rem]',
+                row.reverse ? 'right-4' : 'left-4',
               ]}
             >
               <div
                 class={[
-                  'services-hero-marquee',
-                  row.reverse && 'services-hero-marquee--reverse',
+                  'services-hero-flow',
+                  row.reverse && 'services-hero-flow--reverse',
                 ]}
               >
                 {#each [0, 1] as loopIndex (loopIndex)}
-                  <div class="services-hero-marquee__group">
+                  <div class="services-hero-flow__group">
                     {#each row.items as service (service.title)}
                       <img
                         src={service.image}
                         alt=""
-                        class="services-hero-marquee__image"
+                        class="services-hero-flow__image"
                       />
                     {/each}
                   </div>
@@ -621,7 +698,7 @@
 
   <footer class="border-t border-outline-variant bg-surface-container px-4 py-8 pb-28 text-center">
     <div class="flex items-center justify-center gap-2">
-      <img src={logo} alt="" class="h-7 w-7 object-contain grayscale" />
+      <img src={logo} alt="" class="h-8 w-8 object-contain" />
       <p class="font-black uppercase text-on-surface">Shivam Construction</p>
     </div>
     <p class="mx-auto mt-3 max-w-[28ch] text-sm leading-6 text-on-surface-variant">
