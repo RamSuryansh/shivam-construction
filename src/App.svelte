@@ -21,12 +21,12 @@
     User,
     Wrench,
   } from '@lucide/svelte'
-  import businessCardReference from './assets/business-card-reference.png'
-  import constructionSite from './assets/construction-site.png'
-  import coreCutting from './assets/core-cutting.png'
-  import rebarring from './assets/rebarring.png'
+  import businessCardReference from './assets/business-card-reference.jpg'
+  import constructionSite from './assets/construction-site.jpg'
+  import coreCutting from './assets/core-cutting.jpg'
+  import rebarring from './assets/rebarring.jpg'
   import logo from './assets/shivam-logo-v2.png'
-  import waterproofing from './assets/waterproofing.png'
+  import waterproofing from './assets/waterproofing.jpg'
 
   type Page = 'home' | 'services' | 'about' | 'contact'
   type IconComponent = typeof House
@@ -127,6 +127,12 @@
     { id: 'lower', items: [...homeHeroCards].reverse(), reverse: true },
   ]
 
+  const homeStats: { value: string; label: string }[] = [
+    { value: '20+', label: 'Years experience' },
+    { value: '500+', label: 'Projects delivered' },
+    { value: '3', label: 'Core services' },
+  ]
+
   const allServices: { label: string; detail: string; icon: IconComponent }[] = [
     { label: 'Core Cutting', detail: 'Wall, slab and beam openings', icon: Drill },
     { label: 'Rebarring', detail: 'Anchoring and reinforcement', icon: SquareStack },
@@ -150,9 +156,35 @@
     document.getElementById('all-services')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
+  function getFormValue(formData: FormData, fieldName: string) {
+    const value = formData.get(fieldName)
+
+    return typeof value === 'string' ? value.trim() : ''
+  }
+
   function handleInquirySubmit(event: SubmitEvent) {
     event.preventDefault()
+
+    if (!(event.currentTarget instanceof HTMLFormElement)) {
+      return
+    }
+
+    const formData = new FormData(event.currentTarget)
+    const name = getFormValue(formData, 'name')
+    const service = getFormValue(formData, 'service')
+    const message = getFormValue(formData, 'message')
+    const inquiryText = [
+      'New Shivam Construction inquiry',
+      name && `Name: ${name}`,
+      service && `Service: ${service}`,
+      message && `Message: ${message}`,
+    ]
+      .filter(Boolean)
+      .join('\n')
+    const inquiryHref = `${whatsappHref}?text=${encodeURIComponent(inquiryText)}`
+
     inquirySent = true
+    window.open(inquiryHref, '_blank', 'noopener,noreferrer') ?? window.location.assign(inquiryHref)
   }
 </script>
 
@@ -202,21 +234,21 @@
                   <div class="home-hero__flow-group">
                     {#each row.items as item (item.title)}
                       {@const Icon = item.icon}
-                      <article class="home-hero__work-tile">
+                      <div class="home-hero__work-tile">
                         <img src={item.image} alt="" class="h-full w-full object-cover" />
                         <div class="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(0,0,0,0.04),rgba(7,12,22,0.78))]"></div>
                         <div class="absolute bottom-2 left-2 right-2">
                           <div class="mb-1 flex h-7 w-7 items-center justify-center rounded bg-primary text-white">
                             <Icon size={14} strokeWidth={2.5} />
                           </div>
-                          <h2 class="text-[12px] font-black uppercase leading-tight text-white">
+                          <p class="text-[12px] font-black uppercase leading-tight text-white">
                             {item.title}
-                          </h2>
+                          </p>
                           <p class="mt-0.5 text-[10px] font-semibold leading-tight text-white/78">
                             {item.detail}
                           </p>
                         </div>
-                      </article>
+                      </div>
                     {/each}
                   </div>
                 {/each}
@@ -266,7 +298,7 @@
                 class="inline-flex h-13 items-center justify-center gap-2 rounded border border-white/38 bg-white/14 px-4 text-sm font-bold uppercase text-white shadow-[0_12px_28px_rgba(0,0,0,0.18)] backdrop-blur transition active:scale-[0.98]"
                 href={whatsappHref}
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
               >
                 <MessageCircle size={17} />
                 WhatsApp
@@ -276,18 +308,22 @@
         </div>
       </section>
 
-      <section class="grid grid-cols-3 border-b border-outline-variant bg-surface px-4 py-5">
-        <div>
-          <p class="text-2xl font-black text-primary">20+</p>
-          <p class="text-xs font-semibold text-on-surface-variant">Years</p>
-        </div>
-        <div>
-          <p class="text-2xl font-black text-primary">500+</p>
-          <p class="text-xs font-semibold text-on-surface-variant">Projects</p>
-        </div>
-        <div>
-          <p class="text-2xl font-black text-primary">3</p>
-          <p class="text-xs font-semibold text-on-surface-variant">Core trades</p>
+      <section class="relative isolate overflow-hidden bg-secondary px-4 py-5 text-white" aria-label="Company highlights">
+        <div
+          class="absolute inset-0 -z-10 bg-[linear-gradient(115deg,rgba(152,0,27,0.34),transparent_42%),linear-gradient(90deg,rgba(255,255,255,0.08)_1px,transparent_1px)] bg-[length:auto,3.25rem_3.25rem]"
+          aria-hidden="true"
+        ></div>
+        <div class="absolute inset-x-0 top-0 h-1 bg-primary" aria-hidden="true"></div>
+
+        <div class="grid grid-cols-3 divide-x divide-white/16">
+          {#each homeStats as stat (stat.label)}
+            <article class="min-w-0 px-3 text-center">
+              <p class="text-[34px] font-black leading-none text-white">{stat.value}</p>
+              <p class="mx-auto mt-2 max-w-[11ch] text-[10px] font-black uppercase leading-[1.15] text-secondary-container">
+                {stat.label}
+              </p>
+            </article>
+          {/each}
         </div>
       </section>
 
@@ -673,7 +709,7 @@
 
           {#if inquirySent}
             <p class="mt-4 rounded border border-primary-fixed-dim bg-primary-fixed px-3 py-2 text-sm font-semibold text-primary" aria-live="polite">
-              Thanks. For the fastest response, call or WhatsApp the team directly.
+              Opening WhatsApp with your inquiry. If it does not open, call or WhatsApp the team directly.
             </p>
           {/if}
         </form>
@@ -683,7 +719,7 @@
         <a
           href={mapsHref}
           target="_blank"
-          rel="noreferrer"
+          rel="noopener noreferrer"
           class="flex items-center justify-between gap-4 rounded-lg border border-outline-variant bg-surface-container-high p-4"
         >
           <span class="flex items-center gap-3 font-bold text-on-surface">
@@ -708,10 +744,10 @@
       <a class="inline-flex h-10 w-10 items-center justify-center rounded border border-outline-variant bg-surface text-secondary" href={phoneHref} aria-label="Call Shivam Construction">
         <Phone size={18} />
       </a>
-      <a class="inline-flex h-10 w-10 items-center justify-center rounded border border-outline-variant bg-surface text-secondary" href={whatsappHref} target="_blank" rel="noreferrer" aria-label="Message Shivam Construction on WhatsApp">
+      <a class="inline-flex h-10 w-10 items-center justify-center rounded border border-outline-variant bg-surface text-secondary" href={whatsappHref} target="_blank" rel="noopener noreferrer" aria-label="Message Shivam Construction on WhatsApp">
         <MessageCircle size={18} />
       </a>
-      <a class="inline-flex h-10 w-10 items-center justify-center rounded border border-outline-variant bg-surface text-secondary" href={mapsHref} target="_blank" rel="noreferrer" aria-label="Open Shivam Construction on maps">
+      <a class="inline-flex h-10 w-10 items-center justify-center rounded border border-outline-variant bg-surface text-secondary" href={mapsHref} target="_blank" rel="noopener noreferrer" aria-label="Open Shivam Construction on maps">
         <MapPinned size={18} />
       </a>
     </div>
