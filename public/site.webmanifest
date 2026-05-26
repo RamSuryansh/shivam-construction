@@ -1,0 +1,21 @@
+{
+  "name": "Shivam Construction",
+  "short_name": "Shivam",
+  "description": "Core cutting, rebarring, rock drilling, breaker hire and waterproofing services across Karnataka.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fcf9f8",
+  "theme_color": "#98001b",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "256x256",
+      "type": "image/png"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}

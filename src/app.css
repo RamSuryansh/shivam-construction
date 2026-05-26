@@ -69,9 +69,28 @@
     min-height: 100dvh;
     max-width: 430px;
     margin-inline: auto;
-    overflow-x: hidden;
+    overflow-x: clip;
     background: var(--color-background);
     box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.05), 0 30px 80px rgba(0, 0, 0, 0.45);
+  }
+
+  .top-nav {
+    position: fixed;
+    z-index: 60;
+    top: 0;
+    left: 50%;
+    width: min(100%, 430px);
+    min-height: calc(4rem + env(safe-area-inset-top));
+    padding-top: env(safe-area-inset-top);
+    transform: translateX(-50%);
+    border-bottom: 1px solid var(--color-outline-variant);
+    background: var(--color-surface);
+    box-shadow: 0 10px 24px rgba(49, 48, 48, 0.08);
+  }
+
+  .main-content {
+    padding-top: calc(4rem + env(safe-area-inset-top));
+    padding-bottom: calc(6rem + env(safe-area-inset-bottom));
   }
 
   .bottom-nav {
@@ -87,6 +106,7 @@
     border-top: 1px solid var(--color-outline-variant);
     background: rgba(255, 255, 255, 0.94);
     box-shadow: 0 -12px 26px rgba(49, 48, 48, 0.12);
+    -webkit-backdrop-filter: blur(18px);
     backdrop-filter: blur(18px);
   }
 
@@ -230,6 +250,42 @@
     object-fit: cover;
     opacity: 0.58;
   }
+
+  .testimonial-carousel {
+    overflow: hidden;
+  }
+
+  .testimonial-card {
+    min-height: 17.5rem;
+    animation: testimonial-card-enter 460ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+
+  .testimonial-control {
+    display: inline-flex;
+    width: 2.75rem;
+    height: 2.75rem;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--color-outline-variant);
+    background: var(--color-surface);
+    color: var(--color-primary);
+    box-shadow: 0 10px 20px rgba(49, 48, 48, 0.08);
+  }
+
+  .testimonial-dot {
+    width: 0.55rem;
+    height: 0.55rem;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    background: var(--color-outline-variant);
+  }
+
+  .testimonial-dot--active {
+    width: 1.45rem;
+    background: var(--color-primary);
+  }
 }
 
 :where(button, a[href], [role='button']):not(.rounded-full) {
@@ -331,11 +387,24 @@
   }
 }
 
+@keyframes testimonial-card-enter {
+  from {
+    opacity: 0;
+    transform: translate3d(1rem, 0, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .home-hero__image,
   .home-hero__blueprint,
   .home-hero__scan,
-  .home-hero__flow {
+  .home-hero__flow,
+  .testimonial-card {
     animation: none;
   }
 
@@ -362,6 +431,12 @@
   .mobile-shell {
     max-width: none;
     box-shadow: none;
+  }
+
+  .top-nav {
+    left: 0;
+    width: 100%;
+    transform: none;
   }
 
   .bottom-nav {

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 160 160" role="img" aria-labelledby="title">
+  <title>Dummy portrait for Anita Deshmukh</title>
+  <defs>
+    <linearGradient id="bg" x1="20" y1="16" x2="142" y2="150" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFE1DF"/>
+      <stop offset="0.55" stop-color="#F3B7B4"/>
+      <stop offset="1" stop-color="#B01830"/>
+    </linearGradient>
+  </defs>
+  <rect width="160" height="160" rx="28" fill="url(#bg)"/>
+  <circle cx="80" cy="62" r="28" fill="#FFF8F7"/>
+  <path d="M34 142c7-31 26-48 46-48s39 17 46 48" fill="#FFF8F7"/>
+  <text x="80" y="86" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#98001B">AD</text>
+</svg>

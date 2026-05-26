@@ -3,6 +3,8 @@
     ArrowRight,
     BadgeCheck,
     Building2,
+    ChevronLeft,
+    ChevronRight,
     Drill,
     Droplets,
     Hammer,
@@ -15,17 +17,25 @@
     MapPinned,
     MessageCircle,
     Phone,
+    Quote,
     Send,
     ShieldCheck,
     SquareStack,
+    Star,
     User,
     Wrench,
   } from '@lucide/svelte'
+  import { onMount } from 'svelte'
   import businessCardReference from './assets/business-card-reference.jpg'
   import constructionSite from './assets/construction-site.jpg'
   import coreCutting from './assets/core-cutting.jpg'
   import rebarring from './assets/rebarring.jpg'
   import logo from './assets/shivam-logo-v2.png'
+  import testimonialAnita from './assets/testimonial-anita.svg'
+  import testimonialFarah from './assets/testimonial-farah.svg'
+  import testimonialMeera from './assets/testimonial-meera.svg'
+  import testimonialNaveen from './assets/testimonial-naveen.svg'
+  import testimonialPrakash from './assets/testimonial-prakash.svg'
   import waterproofing from './assets/waterproofing.jpg'
 
   type Page = 'home' | 'services' | 'about' | 'contact'
@@ -33,6 +43,7 @@
 
   let activePage = $state<Page>('home')
   let inquirySent = $state(false)
+  let activeTestimonialIndex = $state(0)
 
   const phone = '9148905355'
   const phoneHref = 'tel:+919148905355'
@@ -55,6 +66,9 @@
       description:
         'Clean circular openings for plumbing, electrical, HVAC and machine foundations without disturbing the surrounding structure.',
       image: coreCutting,
+      imageAlt: 'Core cutting work for a concrete structure by Shivam Construction',
+      imageWidth: 1344,
+      imageHeight: 768,
       icon: Drill,
       points: ['RCC wall and slab openings', 'Low-vibration cutting', 'Accurate site marking'],
     },
@@ -64,6 +78,9 @@
       description:
         'Chemical anchoring and post-installed reinforcement for extensions, retrofits and concrete repair work.',
       image: rebarring,
+      imageAlt: 'Rebarring and chemical anchoring work by Shivam Construction',
+      imageWidth: 1344,
+      imageHeight: 768,
       icon: SquareStack,
       points: ['Post-installed bars', 'Column and beam extensions', 'Load-aware detailing'],
     },
@@ -73,6 +90,9 @@
       description:
         'Layered treatment for terraces, roofs and damp areas with surface preparation, sealing and finish protection.',
       image: waterproofing,
+      imageAlt: 'Waterproofing treatment for a construction site by Shivam Construction',
+      imageWidth: 512,
+      imageHeight: 293,
       icon: Droplets,
       points: ['Terrace waterproofing', 'Leak diagnosis', 'Protective coating systems'],
     },
@@ -81,6 +101,9 @@
     subtitle: string
     description: string
     image: string
+    imageAlt: string
+    imageWidth: number
+    imageHeight: number
     icon: IconComponent
     points: string[]
   }[]
@@ -145,11 +168,71 @@
   ]
 
   const trustMarks = ['Bidar based team', 'Karnataka service area', 'On-site consultation']
+  const ratingStars = [1, 2, 3, 4, 5]
+  const testimonialIntervalMs = 4200
+
+  const testimonials: { name: string; role: string; quote: string; image: string }[] = [
+    {
+      name: 'Anita Deshmukh',
+      role: 'Homeowner, Bidar',
+      image: testimonialAnita,
+      quote:
+        'The terrace waterproofing was planned neatly and finished on schedule. The team explained every step before starting.',
+    },
+    {
+      name: 'Naveen Reddy',
+      role: 'Site contractor, Kalaburagi',
+      image: testimonialNaveen,
+      quote:
+        'Their core cutting work was clean, accurate and easy to coordinate with the rest of our site team.',
+    },
+    {
+      name: 'Meera Patil',
+      role: 'Project owner, Basavakalyan',
+      image: testimonialMeera,
+      quote:
+        'We needed careful rebarring for an extension, and Shivam Construction handled the anchoring details very professionally.',
+    },
+    {
+      name: 'Prakash Kulkarni',
+      role: 'Builder, Bidar',
+      image: testimonialPrakash,
+      quote:
+        'The crew came prepared, kept the work area organized and completed the drilling without disturbing nearby concrete.',
+    },
+    {
+      name: 'Farah Shaikh',
+      role: 'House owner, Kamalnagar',
+      image: testimonialFarah,
+      quote:
+        'Communication was simple from the first call. The work was tidy, measured and exactly what we had discussed.',
+    },
+  ]
+
+  const activeTestimonial = $derived(testimonials[activeTestimonialIndex])
+
+  onMount(() => {
+    const intervalId = window.setInterval(showNextTestimonial, testimonialIntervalMs)
+
+    return () => window.clearInterval(intervalId)
+  })
 
   function navigate(page: Page) {
     activePage = page
     inquirySent = false
     requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: 'smooth' }))
+  }
+
+  function showTestimonial(index: number) {
+    activeTestimonialIndex = (index + testimonials.length) % testimonials.length
+  }
+
+  function showNextTestimonial() {
+    showTestimonial(activeTestimonialIndex + 1)
+  }
+
+  function showPreviousTestimonial() {
+    showTestimonial(activeTestimonialIndex - 1)
   }
 
   function scrollToAllServices() {
@@ -189,7 +272,7 @@
 </script>
 
 <div class="mobile-shell">
-  <header class="sticky top-0 z-40 border-b border-outline-variant bg-surface/95 backdrop-blur">
+  <header class="top-nav">
     <div class="flex h-16 items-center justify-between px-4">
       <button
         class="flex min-w-0 items-center gap-2 text-left"
@@ -197,7 +280,14 @@
         aria-label="Go to home"
         onclick={() => navigate('home')}
       >
-        <img src={logo} alt="Shivam Construction logo" class="h-10 w-10 shrink-0 object-contain" />
+        <img
+          src={logo}
+          alt="Shivam Construction logo"
+          width="613"
+          height="640"
+          decoding="async"
+          class="h-10 w-10 shrink-0 object-contain"
+        />
         <span class="leading-none">
           <span class="block text-[18px] font-black uppercase text-primary">Shivam</span>
           <span class="block text-[10px] font-semibold uppercase text-secondary">Construction</span>
@@ -215,13 +305,18 @@
     </div>
   </header>
 
-  <main class="pb-24">
+  <main class="main-content">
     {#if activePage === 'home'}
       <section class="home-hero relative isolate overflow-hidden bg-inverse-surface text-white">
         <div class="absolute inset-0 -z-20" aria-hidden="true">
           <img
             src={constructionSite}
             alt=""
+            width="1344"
+            height="768"
+            fetchpriority="high"
+            loading="eager"
+            decoding="async"
             class="home-hero__image h-full w-full object-cover"
           />
           <div class="home-hero__blueprint"></div>
@@ -235,7 +330,13 @@
                     {#each row.items as item (item.title)}
                       {@const Icon = item.icon}
                       <div class="home-hero__work-tile">
-                        <img src={item.image} alt="" class="h-full w-full object-cover" />
+                        <img
+                          src={item.image}
+                          alt=""
+                          loading="lazy"
+                          decoding="async"
+                          class="h-full w-full object-cover"
+                        />
                         <div class="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(0,0,0,0.04),rgba(7,12,22,0.78))]"></div>
                         <div class="absolute bottom-2 left-2 right-2">
                           <div class="mb-1 flex h-7 w-7 items-center justify-center rounded bg-primary text-white">
@@ -348,7 +449,15 @@
             {@const Icon = service.icon}
             <article class="group overflow-hidden rounded-lg border border-outline-variant bg-surface">
               <div class="relative aspect-[16/10] overflow-hidden">
-                <img src={service.image} alt={service.subtitle} class="h-full w-full object-cover transition duration-500 group-active:scale-[1.02]" />
+                <img
+                  src={service.image}
+                  alt={service.imageAlt}
+                  width={service.imageWidth}
+                  height={service.imageHeight}
+                  loading="lazy"
+                  decoding="async"
+                  class="h-full w-full object-cover transition duration-500 group-active:scale-[1.02]"
+                />
                 <div class="absolute inset-0 bg-[linear-gradient(to_bottom,transparent,rgba(0,0,0,0.7))]"></div>
                 <div class="absolute bottom-4 left-4 right-4 text-white">
                   <div class="mb-2 flex h-9 w-9 items-center justify-center rounded bg-primary">
@@ -379,6 +488,87 @@
                 <span class="font-semibold text-on-surface">{mark}</span>
               </div>
             {/each}
+          </div>
+        </div>
+      </section>
+
+      <section class="px-4 py-10">
+        <div class="mb-5">
+          <p class="text-xs font-bold uppercase text-primary">Sample testimonials</p>
+          <h2 class="mt-2 text-3xl font-black leading-tight text-on-surface">Client feedback</h2>
+        </div>
+
+        <div class="testimonial-carousel" aria-label="Sample client testimonials" aria-roledescription="carousel">
+          {#key activeTestimonial.name}
+            <article class="testimonial-card rounded-lg border border-outline-variant bg-surface p-4 shadow-[0_12px_28px_rgba(49,48,48,0.06)]">
+              <div class="flex items-start gap-3">
+                <img
+                  src={activeTestimonial.image}
+                  alt={`Dummy portrait for ${activeTestimonial.name}`}
+                  width="160"
+                  height="160"
+                  class="h-14 w-14 shrink-0 rounded-lg object-cover"
+                />
+
+                <div class="min-w-0 flex-1">
+                  <div class="flex items-start justify-between gap-3">
+                    <div class="min-w-0">
+                      <h3 class="truncate text-base font-black text-on-surface">
+                        {activeTestimonial.name}
+                      </h3>
+                      <p class="mt-1 text-xs font-bold uppercase leading-tight text-on-surface-variant">
+                        {activeTestimonial.role}
+                      </p>
+                    </div>
+                    <Quote class="shrink-0 text-primary" size={20} strokeWidth={2.4} />
+                  </div>
+
+                  <div class="mt-3 flex gap-0.5 text-primary" aria-label="Five star rating">
+                    {#each ratingStars as star (star)}
+                      <Star size={14} fill="currentColor" strokeWidth={0} />
+                    {/each}
+                  </div>
+                </div>
+              </div>
+
+              <p class="mt-4 text-[15px] leading-6 text-on-surface-variant">
+                "{activeTestimonial.quote}"
+              </p>
+            </article>
+          {/key}
+
+          <div class="mt-4 flex items-center justify-between gap-4">
+            <button
+              type="button"
+              class="testimonial-control"
+              aria-label="Show previous testimonial"
+              onclick={showPreviousTestimonial}
+            >
+              <ChevronLeft size={20} strokeWidth={2.5} />
+            </button>
+
+            <div class="flex items-center justify-center gap-2">
+              {#each testimonials as testimonial, index (testimonial.name)}
+                <button
+                  type="button"
+                  class={['testimonial-dot', activeTestimonialIndex === index && 'testimonial-dot--active']}
+                  aria-label={`Show testimonial from ${testimonial.name}`}
+                  aria-current={activeTestimonialIndex === index ? 'true' : undefined}
+                  onclick={() => showTestimonial(index)}
+                >
+                  <span class="sr-only">{testimonial.name}</span>
+                </button>
+              {/each}
+            </div>
+
+            <button
+              type="button"
+              class="testimonial-control"
+              aria-label="Show next testimonial"
+              onclick={showNextTestimonial}
+            >
+              <ChevronRight size={20} strokeWidth={2.5} />
+            </button>
           </div>
         </div>
       </section>
@@ -423,6 +613,10 @@
                       <img
                         src={service.image}
                         alt=""
+                        width={service.imageWidth}
+                        height={service.imageHeight}
+                        loading="lazy"
+                        decoding="async"
                         class="services-hero-flow__image"
                       />
                     {/each}
@@ -469,7 +663,15 @@
           {#each services as service (service.title)}
             {@const Icon = service.icon}
             <article class="overflow-hidden rounded-lg border border-outline-variant bg-surface">
-              <img src={service.image} alt={service.subtitle} class="aspect-[16/10] w-full object-cover" />
+              <img
+                src={service.image}
+                alt={service.imageAlt}
+                width={service.imageWidth}
+                height={service.imageHeight}
+                loading="lazy"
+                decoding="async"
+                class="aspect-[16/10] w-full object-cover"
+              />
               <div class="p-4">
                 <div class="mb-3 flex items-center gap-3">
                   <span class="flex h-10 w-10 items-center justify-center rounded bg-primary-fixed text-primary">
@@ -538,7 +740,15 @@
       </section>
     {:else if activePage === 'about'}
       <section class="relative h-[260px] overflow-hidden bg-primary">
-        <img src={businessCardReference} alt="Shivam Construction reference card" class="h-full w-full object-cover opacity-28" />
+        <img
+          src={businessCardReference}
+          alt="Shivam Construction reference card"
+          width="1383"
+          height="1600"
+          loading="lazy"
+          decoding="async"
+          class="h-full w-full object-cover opacity-28"
+        />
         <div class="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(152,0,27,0.15),rgba(152,0,27,0.92))]"></div>
         <div class="absolute bottom-0 left-0 right-0 px-4 pb-7 text-white">
           <p class="text-xs font-bold uppercase text-primary-fixed">Our story</p>
@@ -734,7 +944,15 @@
 
   <footer class="border-t border-outline-variant bg-surface-container px-4 py-8 pb-28 text-center">
     <div class="flex items-center justify-center gap-2">
-      <img src={logo} alt="" class="h-8 w-8 object-contain" />
+      <img
+        src={logo}
+        alt=""
+        width="613"
+        height="640"
+        loading="lazy"
+        decoding="async"
+        class="h-8 w-8 object-contain"
+      />
       <p class="font-black uppercase text-on-surface">Shivam Construction</p>
     </div>
     <p class="mx-auto mt-3 max-w-[28ch] text-sm leading-6 text-on-surface-variant">

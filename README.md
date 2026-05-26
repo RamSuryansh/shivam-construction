@@ -19,6 +19,15 @@ pnpm security:audit
 pnpm validate
 ```
 
+## SEO Configuration
+
+Set the live domain before creating the production build so canonical URLs, link preview
+images, `robots.txt`, and `sitemap.xml` use absolute production URLs:
+
+```bash
+VITE_SITE_URL=https://your-production-domain.example pnpm build
+```
+
 ## Production Checklist
 
 Run these before deploying:
